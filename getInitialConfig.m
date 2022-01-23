@@ -8,15 +8,10 @@ function [rectanglesPosition, rectanglesMovementEnabled, rectanglesDirection, re
     for lineNumber=1:size(fileLines, 1)
         rectanglesPosition = cat(1, rectanglesPosition, getRectanglesPosition(fileLines(lineNumber, 1:4)));
         rectanglesMovementEnabled = cat(1, rectanglesMovementEnabled, getRectangleMovementEnabled(fileLines(lineNumber, 5)));
-
-        
-        
-        rectanglesDirection = rectanglesConfig(6:7:end);
-        rectanglesDelta = rectanglesConfig(7:7:end);
+        rectanglesDirection = cat(1, rectanglesDirection, getRectangleDirection(fileLines(lineNumber, 6)));
+        rectanglesDelta = cat(1, rectanglesDelta, getRectangleDelta(fileLines(lineNumber, 7)));
     end
-    
 end
-
 
 function [fixedFileLines] = skipHeader(fileLines)
     fixedFileLines = [];
@@ -36,10 +31,24 @@ function [rectanglesPosition] = getRectanglesPosition(lineData)
     rectanglesPosition = [x y w h];
 end
 
-function [rectangleMovementEnabled] = getRectangleMovementEnabled(movementEnabled)
-    rectangleMovementEnabled = getValueFromStringOrRandomInRange(movementEnabled, 0, 1, 'int');
+function [rectangleMovementEnabled] = getRectangleMovementEnabled(lineData)
+    rectangleMovementEnabled = getValueFromStringOrRandomInRange(lineData, 0, 1, 'int');
     if rectangleMovementEnabled > 1 || rectangleMovementEnabled < 0
         error("MovementEnabled, in config file, must be 0 or 1.")
+    end
+end
+
+function [rectangleDirection] = getRectangleDirection(lineData)
+    rectangleDirection = getValueFromStringOrRandomInRange(lineData, 0, 3, 'int');
+    if rectangleDirection > 3 || rectangleDirection < 0
+        error("Direction must be a value from 0 to 3.");
+    end
+end
+
+function [rectangleDelta] = getRectangleDelta(lineData)
+    rectangleDelta = getValueFromStringOrRandomInRange(lineData, -1, 1, 'float');
+    if rectangleDelta < -1 || rectangleDelta > 1
+        error("Delta must be a value from -1 to 1.");
     end
 end
 
