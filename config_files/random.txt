@@ -1,0 +1,12 @@
+# Default config file - PR & SPC
+# N.B. Leave an empty line before the real configuration
+# x y w h MovementEnabled Direction Delta
+
+* * * * * * *
+* * * * * * *
+* * * * * * *
+* * * * * * *
+* * * * * * *
+* * * * * * *
+* * * * * * *
+* * * * * * *
