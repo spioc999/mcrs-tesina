@@ -1,4 +1,4 @@
-function [xOutput, yOutput, directionOutput, deltaOutput] = calculateNewObstaclePosition(xInput, yInput, w, h, directionInput, deltaInput, limit)
+function [xOutput, yOutput, directionOutput, deltaOutput] = calculateNewObstaclePosition(xInput, yInput, w, h, directionInput, deltaInput)
 
 switch directionInput
     case 0
@@ -20,7 +20,7 @@ end
 directionOutput = directionInput;
 deltaOutput = deltaInput;
 
-[isOverflow, xOverflow, yOverflow] = checkOverflowWithBorders(limit, xOutput, yOutput, w, h);
+[isOverflow, xOverflow, yOverflow] = checkOverflowWithBorders(xOutput, yOutput, w, h);
 
 if isOverflow
     xOutput = xOutput - xOverflow;
@@ -41,5 +41,24 @@ if isOverflow
     end
 end
 
+% [isColliding, xColliding, yColliding] = checkCollisionWithFountain(xOutput, yOutput, w, h);
+% if isColliding
+%     xOutput = xOutput - xColliding;
+%     yOutput = yOutput - yColliding;
+% 
+%     if or(directionInput == 0, directionInput == 2)
+%         deltaOutput = -deltaInput;
+%     else
+%         if yColliding ~= 0
+%             deltaOutput = -deltaInput;
+%         end
+% 
+%         if directionInput == 1
+%             directionOutput = 3;
+%         elseif directionInput == 3
+%             directionOutput = 1;
+%         end
+%     end
+% end
 end
 

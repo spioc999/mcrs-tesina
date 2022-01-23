@@ -1,4 +1,4 @@
-function [isOverflow, xOverflow, yOverflow] = checkOverflowWithBorders(limit, x, y, w, h)
+function [isOverflow, xOverflow, yOverflow] = checkOverflowWithBorders(x, y, w, h)
 
 isOverflow = false;
 xOverflow = 0;
@@ -14,14 +14,14 @@ if y < 0
     yOverflow = y;
 end
 
-if x + w > limit
+if x + w > 10
     isOverflow = true;
-    xOverflow = x + w - limit;
+    xOverflow = x + w - 10;
 end
 
-if y + h > limit
+if y + h > 10
     isOverflow = true;
-    yOverflow = y + h - limit;
+    yOverflow = y + h - 10;
 end
 
 end
