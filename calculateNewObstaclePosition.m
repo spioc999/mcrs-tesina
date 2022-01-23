@@ -29,7 +29,7 @@ if isOverflow
     if or(directionInput == 0, directionInput == 2)
         deltaOutput = -deltaInput;
     else
-        if yOutput ~= 0
+        if yOverflow ~= 0
             deltaOutput = -deltaInput;
         end
 
@@ -39,8 +39,6 @@ if isOverflow
             directionOutput = 1;
         end
     end
-else
-    
 end
 
 end
