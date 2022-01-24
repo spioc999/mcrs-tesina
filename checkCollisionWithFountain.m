@@ -1,31 +1,19 @@
-function [isColliding, xColliding, yColliding] = checkCollisionWithFountain(x, y, w, h)
+function [isColliding] = checkCollisionWithFountain(x, y, w, h)
 
 isColliding = false;
-xColliding = 0;
-yColliding = 0;
 
 %left edge
-if not(edgeNotInFountain([x, y], [x, y+h]))
+if not(edgeNotInFountain([x, y], [x, y+h])) 
     isColliding = true;
-    xColliding = x - 6;
-end
-
-%top edge
-if not(edgeNotInFountain([x, y+h], [x+w, y+h]))
-    isColliding = true;
-    yColliding = y - 4;
-end
-
 %right edge
-if not(edgeNotInFountain([x+w, y+h], [x+w, y]))
+elseif not(edgeNotInFountain([x+w, y+h], [x+w, y]))
     isColliding = true;
-    xColliding = x - 4;
-end
-
+%top edge
+elseif not(edgeNotInFountain([x, y+h], [x+w, y+h]))
+    isColliding = true;
 %bottom edge
-if not(edgeNotInFountain([x+w, y], [x, y]))
+elseif not(edgeNotInFountain([x+w, y], [x, y]))
     isColliding = true;
-    yColliding = y - 6;
 end
 
 end
