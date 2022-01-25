@@ -10,11 +10,11 @@ for i=1:size(positions, 1)
     directionOutput = directions(i);
     deltaOutput = deltas(i);
     w = positions(i, 3);
-    h = positions(1, 4);
+    h = positions(i, 4);
 
     if movementsEnabled(i)
         [x, y] = moveElement(xOutput, yOutput, directionOutput, deltaOutput);
-        xOutput = x;
+        xOutput = x
         yOutput = y;
         
         [isOverflow, xOverflow, yOverflow] = checkOverflowWithBorders(xOutput, yOutput, w, h);
