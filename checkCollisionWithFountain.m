@@ -1,40 +1,20 @@
 function [isColliding] = checkCollisionWithFountain(x, y, w, h)
 
 isColliding = false;
+fountain = [4 4 2 2];
 
 %left edge
-if not(edgeNotInFountain([x, y], [x, y+h])) 
+if not(isFreeEdge([x, y], [x, y+h], fountain)) 
     isColliding = true;
 %right edge
-elseif not(edgeNotInFountain([x+w, y+h], [x+w, y]))
+elseif not(isFreeEdge([x+w, y+h], [x+w, y], fountain))
     isColliding = true;
 %top edge
-elseif not(edgeNotInFountain([x, y+h], [x+w, y+h]))
+elseif not(isFreeEdge([x, y+h], [x+w, y+h], fountain))
     isColliding = true;
 %bottom edge
-elseif not(edgeNotInFountain([x+w, y], [x, y]))
+elseif not(isFreeEdge([x+w, y], [x, y], fountain))
     isColliding = true;
 end
 
-end
-
-function [isEdgeNotInFountain] = edgeNotInFountain(startPoint, endPoint)
-
-alpha = 0:0.02:1;
-i = 1;
-exitCondition = false;
-isEdgeNotInFountain = true;
-
-while(not(exitCondition))
-    x = alpha(i)*startPoint(1) + (1-alpha(i))*endPoint(1);
-    y = alpha(i)*startPoint(2) + (1-alpha(i))*endPoint(2);
-
-    isEdgeNotInFountain = isFreePoint([x y], [4, 4, 2, 2]); %Fountain
-
-    exitCondition = i >= length(alpha) || not(isEdgeNotInFountain);
-
-    i = i+1;
-end    
-
-    
 end
