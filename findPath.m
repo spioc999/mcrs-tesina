@@ -1,3 +1,89 @@
-function [path] = findPath(from, to)
-    % TODO: check if current path is available
+function [path] = findPath(from, to, obstacles)
+    % setup
+    totalArea = (to(1) - from(1)) * (to(2) - from(2)); %Number of total points depends on area
+    maxTrials = round(totalArea * 5);
+
+    placedPoints = [];
+    pointsRoles = [];
+
+    for i=1:maxTrials
+        newPointX = from(1) + (to(1)-from(1)).*rand; % random number in given area
+        newPointY = from(2) + (to(2)-from(2)).*rand; % random number in given area
+        newPoint = [newPointX newPointY];
+        if isFreePoint(newPoint, obstacles, true)
+            numSeenGuards = lookForGuards(newPoint, placedPoints, pointsRoles, obstacles);
+            if numSeenGuards == 0
+                placedPoints = cat(1, placedPoints, newPoint);
+                pointsRoles = cat(1, pointsRoles, Role.GUARD);
+            elseif numSeenGuards >= 2
+                placedPoints = cat(1, placedPoints, newPoint);
+                pointsRoles = cat(1, pointsRoles, Role.CONNECTOR);
+            end
+        end
+    end
+
+    % Adding from & to to the list of placed points
+    placedPoints = cat(1, placedPoints, from, to);
+    pointsRoles = cat(1, pointsRoles, Role.START, Role.END);
+
+
+    numberOfPlacedPoints = size(placedPoints, 1)
+    adjacencyMatrix = zeros(numberOfPlacedPoints, numberOfPlacedPoints);
+    for i=1:numberOfPlacedPoints
+        for j=i+1:numberOfPlacedPoints
+            if isFreeEdge(placedPoints(i, :), placedPoints(j,:), obstacles, [], true) && not(pointsRoles(i) == pointsRoles(j))
+                distance = norm(placedPoints(i, :) - placedPoints(j, :));
+                adjacencyMatrix(i, j) = distance;
+                adjacencyMatrix(j, i) = distance;
+            end
+        end
+    end
+
+    fromNodeIndex = size(placedPoints, 1) - 1;
+    toNodeIndex = size(placedPoints, 1);
+    adjacencyMatrixGraph = graph(adjacencyMatrix);
+    shortestPath = [];
+    while isempty(shortestPath)
+        shortestPath = adjacencyMatrixGraph.shortestpath(fromNodeIndex, toNodeIndex);
+        if isempty(shortestPath)
+            currentToNode = placedPoints(toNodeIndex, :);
+            placedPoints(toNodeIndex) = []; %Remove toIndex from list of placed points
+            toNodeIndex = findNearestNode(currentToNode, placedPoints);
+        end
+    end
+    path = placedPoints(shortestPath, :);
 end
+
+
+function [nearestNodeIndex] = findNearestNode(currentToNode, allNodes)
+    nearestDist = 20;
+    nearestNodeIndex = [];
+    for i=1:size(allNodes, 1)
+        currentDist = norm(currentToNode - allNodes(i, :));
+        if(currentDist < nearestDist)
+            nearestDist = currentDist;
+            nearestNodeIndex = i;
+        end
+    end
+end
+
+
+
+function [numSeenGuards] = lookForGuards(newPoint, placedPoints, pointsRoles, obstacles)
+    numSeenGuards=0;
+    for i=1:size(placedPoints, 1)
+       if pointsRoles(i) == Role.GUARD && isFreeEdge(newPoint, placedPoints(i,:), obstacles)
+            numSeenGuards = numSeenGuards + 1;
+        end
+    end
+end
+
+
+
+
+
+
+
+
+
+

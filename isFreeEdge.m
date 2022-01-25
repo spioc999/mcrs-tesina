@@ -1,7 +1,7 @@
 function [isFree] = isFreeEdge(from, to, obstacles, alphaValue, checkOnBorder) 
 
 if nargin < 4 || size(alphaValue, 1) == 0
-    alphaValue = 0.05;
+    alphaValue = 1/(round(norm(from - to)) * 100); % 100 points each unit
 end
 
 if nargin < 5
