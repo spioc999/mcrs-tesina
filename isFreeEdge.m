@@ -1,14 +1,14 @@
-function [isFree] = isFreeEdge(from, to, obstacles, alpha, checkOnBorder) 
+function [isFree] = isFreeEdge(from, to, obstacles, alphaValue, checkOnBorder) 
 
-if nargin < 4
-    alpha = 0.05;
+if nargin < 4 || size(alphaValue, 1) == 0
+    alphaValue = 0.05;
 end
 
 if nargin < 5
     checkOnBorder = false;
 end
 
-pace = 0:alpha:1;
+pace = 0:alphaValue:1;
 i = 1;
 exitCondition = false;
 isFree = true;
