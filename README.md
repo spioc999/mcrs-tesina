@@ -6,7 +6,7 @@ The filed must contains 8 blocks, if some block configuration missing then they 
 
 InitialPosition, MovementEnabled, Direction, Delta
 [x y w h]*, 0/1, 0/3, float
-[x y w h], -, -, -
+[x y w h], *, *, *
 
 ## Field Meaning
 - InitialPosition: 

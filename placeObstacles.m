@@ -1,14 +1,16 @@
 function [] = placeObstacles(rectangles)
     rect = findall(gcf,'Type', 'Rectangle'); 
     delete(rect)
-    rectangle('Position',[0 0 10 10]); % Field
-    rectangle('Position',[4 4 2 2], 'Curvature',1, 'FaceColor','#4487d4'); %% Blocked area
+    initField();
+    for i=1:size(rectangles, 1)
+        rectangle('Position',[rectangles(i, 1) rectangles(i, 2) rectangles(i, 3) rectangles(i, 4)]); 
+    end
+end
 
-    rectangle('Position',[0.5 2 1 2]); 
-    rectangle('Position',[1 8 3 1]);
-    rectangle('Position',[7 1 1.5 1.5]);
-    rectangle('Position',[7 8 2 1.5]);
-    rectangle('Position',[1 5 1.5 1.5]);
-    rectangle('Position',[2 1 4 2]);
-    rectangle('Position',[7.5 4.5 2 3]);
+function [] = initField()
+    rectangle('Position',[0 0 10 10]); % Field
+    %% Fountain
+    rectangle('Position',[4 4 2 2], 'FaceColor','#606b7d');
+    rectangle('Position',[4.125 4.125 1.75 1.75], 'Curvature',1, 'FaceColor','#4487d4');
+    rectangle('Position',[4.75 4.75 0.5 0.5], 'Curvature', 1, 'FaceColor','#606b7d');
 end
