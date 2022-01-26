@@ -35,7 +35,7 @@ drawnow;
 
 while not(currentPosition == destination)
     tic
-    [currentPosition, pathToDestination] = updateCurrentPosition(currentPosition, pathToDestination)
+    [currentPosition, pathToDestination] = updateCurrentPosition(currentPosition, pathToDestination);
     [rectanglesPosition, rectanglesDirection, rectanglesDelta] = calculateNewObstaclesPosition(rectanglesPosition, rectanglesMovementEnabled, rectanglesDirection, rectanglesDelta);
     
     if isequal(currentPosition, pathToDestination) || not(isPathAvailable(pathToDestination, rectanglesPosition))
@@ -45,7 +45,7 @@ while not(currentPosition == destination)
     placeObstacles(rectanglesPosition);
     addpoints(donePath, currentPosition(1), currentPosition(2));
     addpoints(toDoPath, pathToDestination(:, 1), pathToDestination(:,2));
-    remainingWaitTime = 1 - toc
+    remainingWaitTime = 1 - toc;
     if remainingWaitTime > 0
         pause(remainingWaitTime);
     end
