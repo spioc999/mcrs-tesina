@@ -14,7 +14,7 @@ fountainsMovementEnabled = 0;
 %Idea: if not(isPathAvailable(currentPath)
 % Then findPath(currentPosition, destination)
 
-[rectanglesPosition, rectanglesMovementEnabled, rectanglesDirection, rectanglesDelta] = getInitialConfig("config_files/config.txt");
+[rectanglesPosition, rectanglesMovementEnabled, rectanglesDirection, rectanglesDelta] = getInitialConfig("config_files/random.txt");
 rectanglesPosition = cat(1, rectanglesPosition, fountains);
 rectanglesMovementEnabled = cat(1, rectanglesMovementEnabled, fountainsMovementEnabled);
 rectanglesDirection = cat(1, rectanglesMovementEnabled, 0);
@@ -25,18 +25,31 @@ destination = [10 10];
 
 
 donePath = animatedline('Color','b','LineWidth',3);
-toDotPath = animatedline('Color','r','LineWidth',3);
+toDoPath = animatedline('Color','r','LineWidth',3);
+
+pathToDestination = findPath(currentPosition, destination, rectanglesPosition);
+placeObstacles(rectanglesPosition);
+addpoints(toDoPath, pathToDestination(:, 1), pathToDestination(:,2));
+addpoints(donePath, currentPosition(1), currentPosition(2));
+drawnow;
 
 while not(currentPosition == destination)
-    pathToDestination = findPath(currentPosition, destination, rectanglesPosition);
-    clearpoints(toDotPath);
-    addpoints(toDotPath, pathToDestination(:, 1), pathToDestination(:,2));
-    addpoints(donePath, currentPosition(1), currentPosition(2));
-    drawnow;
-    placeObstacles(rectanglesPosition);
-    
+    tic
     [rectanglesPosition, rectanglesDirection, rectanglesDelta] = calculateNewObstaclesPosition(rectanglesPosition, rectanglesMovementEnabled, rectanglesDirection, rectanglesDelta);
-    currentPosition = pathToDestination(2, :);
-    pause(0.1);
+    pathToDestination = findPath(currentPosition, destination, rectanglesPosition);
+    if size(pathToDestination, 1) > 1
+        currentPosition = pathToDestination(2, :);
+    elseif size(pathToDestination, 1) == 1 && not(isequal(currentPosition, pathToDestination))
+        currentPosition = pathToDestination(1, :);
+    end
+    pathToDestination(1, :) = [];
+    clearpoints(toDoPath);
+    placeObstacles(rectanglesPosition);
+    addpoints(donePath, currentPosition(1), currentPosition(2));
+    addpoints(toDoPath, pathToDestination(:, 1), pathToDestination(:,2));
+    remainingWaitTime = 0.5 - toc;
+    if remainingWaitTime > 0
+        pause(remainingWaitTime);
+    end
 end
 

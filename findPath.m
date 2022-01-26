@@ -43,31 +43,36 @@ function [path] = findPath(from, to, obstacles)
     toNodeIndex = size(placedPoints, 1);
     adjacencyMatrixGraph = graph(adjacencyMatrix);
     shortestPath = [];
-    while isempty(shortestPath)
-        shortestPath = adjacencyMatrixGraph.shortestpath(fromNodeIndex, toNodeIndex);
+    unattainableNodes = [];
+    while not(isempty(toNodeIndex)) && isempty(shortestPath)
+            shortestPath = adjacencyMatrixGraph.shortestpath(fromNodeIndex, toNodeIndex)
         if isempty(shortestPath)
             currentToNode = placedPoints(toNodeIndex, :);
-            placedPoints(toNodeIndex) = []; %Remove toIndex from list of placed points
-            toNodeIndex = findNearestNode(currentToNode, placedPoints);
+            unattainableNodes = cat(1, unattainableNodes, toNodeIndex);
+            toNodeIndex = findNearestNode(currentToNode, placedPoints, unattainableNodes);
         end
     end
-    path = placedPoints(shortestPath, :);
+    if not(isempty(toNodeIndex)) % If path to destination not found then don't move
+        path = placedPoints(shortestPath, :);
+    else
+        path = from;
+    end
+
 end
 
-
-function [nearestNodeIndex] = findNearestNode(currentToNode, allNodes)
+function [nearestNodeIndex] = findNearestNode(currentToNode, allNodes, unattainableNodes)
     nearestDist = 20;
     nearestNodeIndex = [];
     for i=1:size(allNodes, 1)
-        currentDist = norm(currentToNode - allNodes(i, :));
-        if(currentDist < nearestDist)
-            nearestDist = currentDist;
-            nearestNodeIndex = i;
+        if not(any(unattainableNodes(:) == i)) % Perform only nodes not in unattainableNodes array
+            currentDist = norm(currentToNode - allNodes(i, :));
+            if(currentDist < nearestDist)
+                nearestDist = currentDist;
+                nearestNodeIndex = i;
+            end
         end
     end
 end
-
-
 
 function [numSeenGuards] = lookForGuards(newPoint, placedPoints, pointsRoles, obstacles)
     numSeenGuards=0;
