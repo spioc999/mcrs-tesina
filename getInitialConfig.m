@@ -1,15 +1,17 @@
-function [rectanglesPosition, rectanglesMovementEnabled, rectanglesDirection, rectanglesDelta] = getInitialConfig(filePath)
+function [rectanglesPosition, rectanglesMovementEnabled, rectanglesDirection, rectanglesDelta, rectanglesColor] = getInitialConfig(filePath)
     rectanglesPosition = [];
     rectanglesMovementEnabled = [];
     rectanglesDirection = []; 
     rectanglesDelta = [];
+    rectanglesColor = [];
 
     fileLines = skipHeader(readlines(filePath));
     for lineNumber=1:size(fileLines, 1)
-        rectanglesPosition = cat(1, rectanglesPosition, getRectanglesPosition(fileLines(lineNumber, 1:4), rectanglesPosition));
+        rectanglesPosition = cat(1, rectanglesPosition, getRectanglePosition(fileLines(lineNumber, 1:4), rectanglesPosition));
         rectanglesMovementEnabled = cat(1, rectanglesMovementEnabled, getRectangleMovementEnabled(fileLines(lineNumber, 5)));
         rectanglesDirection = cat(1, rectanglesDirection, getRectangleDirection(fileLines(lineNumber, 6)));
         rectanglesDelta = cat(1, rectanglesDelta, getRectangleDelta(fileLines(lineNumber, 7)));
+        rectanglesColor = cat(1, rectanglesColor, getRectangleColor(fileLines(lineNumber, 8)));
     end
 end
 
@@ -23,7 +25,7 @@ function [fixedFileLines] = skipHeader(fileLines)
     end
 end
 
-function [rectanglesPosition] = getRectanglesPosition(lineData, allRectangles)
+function [rectanglesPosition] = getRectanglePosition(lineData, allRectangles)
     fountain = [4 4 2 2];
     % Set up a collision block in order to enter the while
     skipCheck = true;
@@ -67,6 +69,15 @@ function [value] = getValueFromStringOrRandomInRange(strValue, rangeInit, rangeE
         end
     else
         value = str2double(strValue);
+    end
+end
+
+
+function [rectangleColor] = getRectangleColor(strValue)
+    if strcmp(strValue, '*')
+        rectangleColor = strcat('#', dec2hex(randi([1 16777215], 1, 1), 6));
+    else
+        rectangleColor = lineData;
     end
 end
 

@@ -8,13 +8,13 @@ hold on
 
 %TODO: refactoring from rectangle to obstacle
 
-[rectanglesPosition, rectanglesMovementEnabled, rectanglesDirection, rectanglesDelta] = getInitialConfig("config_files/random.txt");
+[rectanglesPosition, rectanglesMovementEnabled, rectanglesDirection, rectanglesDelta, rectanglesColor] = getInitialConfig("config_files/random.txt");
 [rectanglesPosition, rectanglesMovementEnabled, rectanglesDirection, rectanglesDelta] = addFountainToObstacles(rectanglesPosition, rectanglesMovementEnabled, rectanglesDirection, rectanglesDelta);
 
 [currentPosition, initArea, destination, donePath, toDoPath, finishPlot] = initVariables();
 
 pathToDestination = findPath(currentPosition, destination, initArea, rectanglesPosition);
-currentPositionPlot = draw(currentPosition, toDoPath, donePath, pathToDestination, rectanglesPosition, []);
+currentPositionPlot = draw(currentPosition, toDoPath, donePath, pathToDestination, rectanglesPosition, rectanglesColor, []);
 pause(2); % Wait in order to evaluate the field
 
 while not(currentPosition == destination)
@@ -25,7 +25,7 @@ while not(currentPosition == destination)
     if not(isPathAvailable(pathToDestination, rectanglesPosition))
         pathToDestination = findPath(currentPosition, destination, initArea, rectanglesPosition);
     end
-    currentPositionPlot = draw(currentPosition, toDoPath, donePath, pathToDestination, rectanglesPosition, currentPositionPlot);
+    currentPositionPlot = draw(currentPosition, toDoPath, donePath, pathToDestination, rectanglesPosition, rectanglesColor, currentPositionPlot);
     calculateWaitTimeAndWait();
 end
 delete(finishPlot);
@@ -57,9 +57,9 @@ function [currentPosition, pathToDestination, initArea] = updateCurrentPosition(
 end
 
 
-function [currentPositionPlot] = draw(currentPosition, toDoPath, donePath, pathToDestination, rectanglesPosition, currentPositionPlot)
+function [currentPositionPlot] = draw(currentPosition, toDoPath, donePath, pathToDestination, rectanglesPosition, rectanglesColor, currentPositionPlot)
     clearpoints(toDoPath);
-    placeObstacles(rectanglesPosition);
+    placeObstacles(rectanglesPosition, rectanglesColor);
     addpoints(donePath, currentPosition(1), currentPosition(2));
     addpoints(toDoPath, pathToDestination(:, 1), pathToDestination(:,2));
     if not(isempty(currentPositionPlot))

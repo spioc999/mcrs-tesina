@@ -1,9 +1,11 @@
-function [] = placeObstacles(rectangles)
+function [] = placeObstacles(rectangles, colors)
     rect = findall(gcf,'Type', 'Rectangle'); 
     delete(rect)
     initField();
     for i=1:size(rectangles, 1)
-        rectangle('Position',[rectangles(i, 1) rectangles(i, 2) rectangles(i, 3) rectangles(i, 4)]); 
+        if not(isequal(rectangles(i, :), [4 4 2 2]))
+            rectangle('Position',[rectangles(i, 1) rectangles(i, 2) rectangles(i, 3) rectangles(i, 4)], 'FaceColor', colors(i, :)); 
+        end
     end
 end
 
