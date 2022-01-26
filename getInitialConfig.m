@@ -11,7 +11,7 @@ function [rectanglesPosition, rectanglesMovementEnabled, rectanglesDirection, re
         rectanglesMovementEnabled = cat(1, rectanglesMovementEnabled, getRectangleMovementEnabled(fileLines(lineNumber, 5)));
         rectanglesDirection = cat(1, rectanglesDirection, getRectangleDirection(fileLines(lineNumber, 6)));
         rectanglesDelta = cat(1, rectanglesDelta, getRectangleDelta(fileLines(lineNumber, 7)));
-        rectanglesColor = cat(1, rectanglesColor, getRectangleColor(fileLines(lineNumber, 8)));
+        rectanglesColor = cat(1, rectanglesColor, cat(2, rand(1, 3), 0.5));
     end
 end
 
@@ -69,15 +69,6 @@ function [value] = getValueFromStringOrRandomInRange(strValue, rangeInit, rangeE
         end
     else
         value = str2double(strValue);
-    end
-end
-
-
-function [rectangleColor] = getRectangleColor(strValue)
-    if strcmp(strValue, '*')
-        rectangleColor = strcat('#', dec2hex(randi([1 16777215], 1, 1), 6));
-    else
-        rectangleColor = lineData;
     end
 end
 
