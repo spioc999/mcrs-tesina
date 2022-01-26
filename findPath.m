@@ -45,7 +45,7 @@ function [path] = findPath(from, to, obstacles)
     shortestPath = [];
     unattainableNodes = [];
     while not(isempty(toNodeIndex)) && isempty(shortestPath)
-            shortestPath = adjacencyMatrixGraph.shortestpath(fromNodeIndex, toNodeIndex)
+        shortestPath = adjacencyMatrixGraph.shortestpath(fromNodeIndex, toNodeIndex);
         if isempty(shortestPath)
             currentToNode = placedPoints(toNodeIndex, :);
             unattainableNodes = cat(1, unattainableNodes, toNodeIndex);

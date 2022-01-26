@@ -14,7 +14,7 @@ for i=1:size(positions, 1)
 
     if movementsEnabled(i)
         [x, y] = moveElement(xOutput, yOutput, directionOutput, deltaOutput);
-        xOutput = x
+        xOutput = x;
         yOutput = y;
         
         [isOverflow, xOverflow, yOverflow] = checkOverflowWithBorders(xOutput, yOutput, w, h);
