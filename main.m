@@ -9,15 +9,11 @@ fountains = [4 4 2 2];
 fountainsMovementEnabled = 0;
 
 %TODO: refactoring from rectangle to obstacle
-% PROBLEM: Fountain is not included in list of obstacles
 
-%Idea: if not(isPathAvailable(currentPath)
-% Then findPath(currentPosition, destination)
-
-[rectanglesPosition, rectanglesMovementEnabled, rectanglesDirection, rectanglesDelta] = getInitialConfig("config_files/config.txt");
+[rectanglesPosition, rectanglesMovementEnabled, rectanglesDirection, rectanglesDelta] = getInitialConfig("config_files/random.txt");
 rectanglesPosition = cat(1, rectanglesPosition, fountains);
 rectanglesMovementEnabled = cat(1, rectanglesMovementEnabled, fountainsMovementEnabled);
-rectanglesDirection = cat(1, rectanglesMovementEnabled, 0);
+rectanglesDirection = cat(1, rectanglesDirection, 0);
 rectanglesDelta = cat(1, rectanglesDelta, 0);
 
 currentPosition = [0 0];
@@ -32,7 +28,7 @@ placeObstacles(rectanglesPosition);
 addpoints(toDoPath, pathToDestination(:, 1), pathToDestination(:,2));
 addpoints(donePath, currentPosition(1), currentPosition(2));
 drawnow;
-
+pause(2);
 while not(currentPosition == destination)
     tic
     [currentPosition, pathToDestination] = updateCurrentPosition(currentPosition, pathToDestination);

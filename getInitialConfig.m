@@ -6,7 +6,7 @@ function [rectanglesPosition, rectanglesMovementEnabled, rectanglesDirection, re
 
     fileLines = skipHeader(readlines(filePath));
     for lineNumber=1:size(fileLines, 1)
-        rectanglesPosition = cat(1, rectanglesPosition, getRectanglesPosition(fileLines(lineNumber, 1:4)));
+        rectanglesPosition = cat(1, rectanglesPosition, getRectanglesPosition(fileLines(lineNumber, 1:4), rectanglesPosition));
         rectanglesMovementEnabled = cat(1, rectanglesMovementEnabled, getRectangleMovementEnabled(fileLines(lineNumber, 5)));
         rectanglesDirection = cat(1, rectanglesDirection, getRectangleDirection(fileLines(lineNumber, 6)));
         rectanglesDelta = cat(1, rectanglesDelta, getRectangleDelta(fileLines(lineNumber, 7)));
@@ -23,11 +23,17 @@ function [fixedFileLines] = skipHeader(fileLines)
     end
 end
 
-function [rectanglesPosition] = getRectanglesPosition(lineData)
-    x = getValueFromStringOrRandomInRange(lineData(1), 0, 9, 'float');
-    y = getValueFromStringOrRandomInRange(lineData(2), 0, 9, 'float');
-    w = getValueFromStringOrRandomInRange(lineData(3), 1, min([4, 10-x]), 'float'); 
-    h = getValueFromStringOrRandomInRange(lineData(4), 1, min(4, 10-y), 'float');
+function [rectanglesPosition] = getRectanglesPosition(lineData, allRectangles)
+    fountain = [4 4 2 2];
+    % Set up a collision block in order to enter the while
+    skipCheck = true;
+    while skipCheck || checkCollisionWithObstacles(x, y, w, h, cat(1, allRectangles, fountain))
+        x = getValueFromStringOrRandomInRange(lineData(1), 0, 9, 'float');
+        y = getValueFromStringOrRandomInRange(lineData(2), 0, 9, 'float');
+        w = getValueFromStringOrRandomInRange(lineData(3), 1, min([4, 10-x]), 'float'); 
+        h = getValueFromStringOrRandomInRange(lineData(4), 1, min(4, 10-y), 'float');
+        skipCheck = false;
+    end
     rectanglesPosition = [x y w h];
 end
 

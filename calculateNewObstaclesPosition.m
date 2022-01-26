@@ -3,6 +3,7 @@ function [positionsOutput, directionsOutput, deltasOutput] = calculateNewObstacl
 positionsOutput = [];
 directionsOutput = [];
 deltasOutput = [];
+fountain = [4 4 2 2];
 
 for i=1:size(positions, 1)
     xOutput = positions(i, 1);
@@ -38,7 +39,7 @@ for i=1:size(positions, 1)
             end
         end
         
-        isColliding = checkCollisionWithFountain(xOutput, yOutput, w, h);
+        isColliding = checkCollisionWithObstacles(xOutput, yOutput, w, h, fountain);
         if isColliding
             if or(directionOutput == 0, directionOutput == 2)
                 deltaOutput = -deltaOutput;
@@ -50,7 +51,7 @@ for i=1:size(positions, 1)
                 end
             end
             [x, y] = moveElement(xOutput, yOutput, directionOutput, deltaOutput);
-            isCollidingAgain = checkCollisionWithFountain(x, y, w, h);
+            isCollidingAgain = checkCollisionWithObstacles(x, y, w, h, fountain);
             if isCollidingAgain
                 deltaOutput = -deltaOutput;
                 [x, y] = moveElement(xOutput, yOutput, directionOutput, deltaOutput);
