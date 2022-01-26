@@ -11,7 +11,7 @@ hold on
 [rectanglesPosition, rectanglesMovementEnabled, rectanglesDirection, rectanglesDelta] = getInitialConfig("config_files/random.txt");
 [rectanglesPosition, rectanglesMovementEnabled, rectanglesDirection, rectanglesDelta] = addFountainToObstacles(rectanglesPosition, rectanglesMovementEnabled, rectanglesDirection, rectanglesDelta);
 
-[currentPosition, initArea, destination, donePath, toDoPath] = initVariables();
+[currentPosition, initArea, destination, donePath, toDoPath, finishPlot] = initVariables();
 
 pathToDestination = findPath(currentPosition, destination, initArea, rectanglesPosition);
 currentPositionPlot = draw(currentPosition, toDoPath, donePath, pathToDestination, rectanglesPosition, []);
@@ -28,6 +28,9 @@ while not(currentPosition == destination)
     currentPositionPlot = draw(currentPosition, toDoPath, donePath, pathToDestination, rectanglesPosition, currentPositionPlot);
     calculateWaitTimeAndWait();
 end
+delete(finishPlot);
+plot(10, 10, 'Marker','s', 'MarkerEdgeColor','blue', 'MarkerSize', 30, 'LineWidth',2); %Finish
+
 
 %% Start functions section
 
@@ -62,7 +65,7 @@ function [currentPositionPlot] = draw(currentPosition, toDoPath, donePath, pathT
     if not(isempty(currentPositionPlot))
         delete(currentPositionPlot)
     end
-    currentPositionPlot = plot(currentPosition(1), currentPosition(2), 'Marker','o', 'MarkerSize',10, 'MarkerFaceColor','b');
+    currentPositionPlot = plot(currentPosition(1), currentPosition(2), 'Marker','o', 'MarkerSize',10, 'MarkerEdgeColor', 'blue' ,'MarkerFaceColor','b');
 end
 
 
@@ -73,12 +76,14 @@ function [rectanglesPosition, rectanglesMovementEnabled, rectanglesDirection, re
     rectanglesDelta = cat(1, rectanglesDelta, 0);
 end
 
-function [currentPosition, initArea, destination, donePath, toDoPath] = initVariables()
+function [currentPosition, initArea, destination, donePath, toDoPath, finishPlot] = initVariables()
     currentPosition = [0 0];
     initArea = currentPosition;
     destination = [10 10];
     donePath = animatedline('Color','b', 'LineWidth',3);
     toDoPath = animatedline('Color','r','LineWidth',3);
+    plot(0, 0, 'Marker','s', 'MarkerEdgeColor','blue', 'MarkerSize',30, 'LineWidth',2); %Start
+    finishPlot = plot(10, 10, 'Marker','s', 'MarkerEdgeColor','red', 'MarkerSize', 30, 'LineWidth',2); %Finish
 end
 
 function [remainingWaitTime] = calculateWaitTimeAndWait()
