@@ -1,0 +1,6 @@
+# Default config file - SPC
+# N.B. Leave an empty line before the real configuration
+# x y w h MovementEnabled Direction Delta
+
+0 1 1.5 1.5 1 3 -0.2
+2 5 1.5 3 1 0 0.15

@@ -1,7 +1,7 @@
 function [path, graphMatrix, nodePositions] = findPath(from, to, initArea, endArea, obstacles)
     if not(isequal(from, to))
         totalArea = (endArea(1) - initArea(1)) * (endArea(2) - initArea(2)); %Number of total points depends on area
-        maxTrials = round(totalArea * 5);
+        maxTrials = round(totalArea * 10);
     
         placedPoints = [];
         pointsRoles = [];
@@ -48,11 +48,12 @@ function [path, graphMatrix, nodePositions] = findPath(from, to, initArea, endAr
         unattainableNodes = [];
         while not(isempty(toNodeIndex)) && isempty(shortestPath)
             shortestPath = adjacencyMatrixGraph.shortestpath(fromNodeIndex, toNodeIndex);
-            if isempty(shortestPath)
-                currentToNode = placedPoints(toNodeIndex, :);
-                unattainableNodes = cat(1, unattainableNodes, toNodeIndex);
-                toNodeIndex = findNearestNode(currentToNode, placedPoints, unattainableNodes);
-            end
+             if isempty(shortestPath)
+                 toNodeIndex = [];
+%                 currentToNode = placedPoints(toNodeIndex, :);
+%                 unattainableNodes = cat(1, unattainableNodes, toNodeIndex);
+%                 toNodeIndex = findNearestNode(currentToNode, placedPoints, unattainableNodes);
+             end
         end
         if not(isempty(toNodeIndex)) % If path to destination not found then don't move
             path = placedPoints(shortestPath, :);
