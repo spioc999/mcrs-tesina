@@ -56,7 +56,7 @@ while(not(exitCondition))
 
     isFree = ~isIntersecting;
 
-    exitCondition = i >= length(obstacles) || not(isFree);
+    exitCondition = i >= size(obstacles, 1) || not(isFree);
     i = i+1;
 end
 end
