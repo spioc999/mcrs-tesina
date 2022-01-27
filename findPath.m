@@ -1,15 +1,15 @@
-function [path] = findPath(from, to, initArea, obstacles)
+function [path] = findPath(from, to, initArea, endArea, obstacles)
     % setup
 
-    totalArea = (10 - initArea(1)) * (10 - initArea(2)); %Number of total points depends on area
+    totalArea = (endArea(1) - initArea(1)) * (endArea(2) - initArea(2)); %Number of total points depends on area
     maxTrials = round(totalArea * 5);
 
     placedPoints = [];
     pointsRoles = [];
 
     for i=1:maxTrials
-        newPointX = initArea(1) + (10 - initArea(1)).*rand; % random number in given area
-        newPointY = initArea(2) + (10 - initArea(2)).*rand; % random number in given area
+        newPointX = initArea(1) + (endArea(1) - initArea(1)).*rand; % random number in given area
+        newPointY = initArea(2) + (endArea(2) - initArea(2)).*rand; % random number in given area
         newPoint = [newPointX newPointY];
         if isFreePoint(newPoint, obstacles, true)
             numSeenGuards = lookForGuards(newPoint, placedPoints, pointsRoles, obstacles);
