@@ -13,19 +13,19 @@ hold on
 
 [currentPosition, initArea, destination, donePath, toDoPath, finishPlot] = initVariables();
 
-pathToDestination = findPath(currentPosition, destination, initArea, rectanglesPosition);
-currentPositionPlot = draw(currentPosition, toDoPath, donePath, pathToDestination, rectanglesPosition, rectanglesColor, []);
+[pathToDestination, graphMatrix, nodePositions] = findPath(currentPosition, destination, initArea, rectanglesPosition);
+[currentPositionPlot, graphPlot] = draw(currentPosition, toDoPath, donePath, pathToDestination, rectanglesPosition, rectanglesColor, [], graphMatrix, nodePositions, []);
 pause(2); % Wait in order to evaluate the field
 
 while not(currentPosition == destination)
-    tic % Starting peace of code time count
+    tic % Starting piece of code time count
     [currentPosition, pathToDestination, initArea] = updateCurrentPosition(currentPosition, pathToDestination, initArea);
     [rectanglesPosition, rectanglesDirection, rectanglesDelta] = calculateNewObstaclesPosition(rectanglesPosition, rectanglesMovementEnabled, rectanglesDirection, rectanglesDelta);
     
     if not(isPathAvailable(pathToDestination, rectanglesPosition))
-        pathToDestination = findPath(currentPosition, destination, initArea, rectanglesPosition);
+        [pathToDestination, graphMatrix, nodePositions] = findPath(currentPosition, destination, initArea, rectanglesPosition);
     end
-    currentPositionPlot = draw(currentPosition, toDoPath, donePath, pathToDestination, rectanglesPosition, rectanglesColor, currentPositionPlot);
+    [currentPositionPlot, graphPlot] = draw(currentPosition, toDoPath, donePath, pathToDestination, rectanglesPosition, rectanglesColor, currentPositionPlot, graphMatrix, nodePositions, graphPlot);
     calculateWaitTimeAndWait();
 end
 delete(finishPlot);
@@ -57,7 +57,7 @@ function [currentPosition, pathToDestination, initArea] = updateCurrentPosition(
 end
 
 
-function [currentPositionPlot] = draw(currentPosition, toDoPath, donePath, pathToDestination, rectanglesPosition, rectanglesColor, currentPositionPlot)
+function [currentPositionPlot, graphPlot] = draw(currentPosition, toDoPath, donePath, pathToDestination, rectanglesPosition, rectanglesColor, currentPositionPlot, graphMatrix, nodePositions, graphPlot)
     clearpoints(toDoPath);
     placeObstacles(rectanglesPosition, rectanglesColor);
     addpoints(donePath, currentPosition(1), currentPosition(2));
@@ -65,7 +65,12 @@ function [currentPositionPlot] = draw(currentPosition, toDoPath, donePath, pathT
     if not(isempty(currentPositionPlot))
         delete(currentPositionPlot)
     end
+    if(not(isempty(graphPlot)))
+        delete(graphPlot)
+    end
     currentPositionPlot = plot(currentPosition(1), currentPosition(2), 'Marker','o', 'MarkerSize',10, 'MarkerEdgeColor', 'blue' ,'MarkerFaceColor','b');
+    graphPlot = plot(graph(graphMatrix), 'XData', nodePositions(:, 1), 'YData', nodePositions(:, 2), 'EdgeColor','#EAEAEA', 'MarkerSize', 0.1);
+    graphPlot.NodeLabel = {};
 end
 
 
@@ -87,6 +92,7 @@ function [currentPosition, initArea, destination, donePath, toDoPath, finishPlot
 end
 
 function [remainingWaitTime] = calculateWaitTimeAndWait()
+    toc
     remainingWaitTime = 1 - toc;
     if remainingWaitTime > 0
         pause(remainingWaitTime);

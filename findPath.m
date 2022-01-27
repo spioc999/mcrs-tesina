@@ -1,7 +1,7 @@
-function [path] = findPath(from, to, initArea, obstacles)
+function [path, graphMatrix, nodePositions] = findPath(from, to, initArea, obstacles)
     % setup
     totalArea = (to(1) - initArea(1)) * (to(2) - initArea(2)); %Number of total points depends on area
-    maxTrials = round(totalArea * 5);
+    maxTrials = round(totalArea * 10);
 
     placedPoints = [];
     pointsRoles = [];
@@ -31,7 +31,7 @@ function [path] = findPath(from, to, initArea, obstacles)
     adjacencyMatrix = zeros(numberOfPlacedPoints, numberOfPlacedPoints);
     for i=1:numberOfPlacedPoints
         for j=i+1:numberOfPlacedPoints
-            if isFreeEdge(placedPoints(i, :), placedPoints(j,:), obstacles, [], true) && not(pointsRoles(i) == pointsRoles(j))
+            if isFreeEdge(placedPoints(i, :), placedPoints(j,:), obstacles) && not(pointsRoles(i) == pointsRoles(j))
                 distance = norm(placedPoints(i, :) - placedPoints(j, :));
                 adjacencyMatrix(i, j) = distance;
                 adjacencyMatrix(j, i) = distance;
@@ -41,6 +41,8 @@ function [path] = findPath(from, to, initArea, obstacles)
 
     fromNodeIndex = size(placedPoints, 1) - 1;
     toNodeIndex = size(placedPoints, 1);
+    graphMatrix = adjacencyMatrix;
+    nodePositions = placedPoints;
     adjacencyMatrixGraph = graph(adjacencyMatrix);
     shortestPath = [];
     unattainableNodes = [];
