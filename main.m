@@ -12,6 +12,7 @@ hold on
 [rectanglesPosition, rectanglesMovementEnabled, rectanglesDirection, rectanglesDelta] = addFountainToObstacles(rectanglesPosition, rectanglesMovementEnabled, rectanglesDirection, rectanglesDelta);
 
 [currentPosition, initArea, endArea, donePath, toDoPath] = initVariables();
+newDestination = true;
 
 
 [destinations] = findDestinations(5, rectanglesPosition);
@@ -24,7 +25,7 @@ pause(2); % Wait in order to evaluate the field
 
 while not(isempty(destinations))
     tic % Starting peace of code time count
-    [currentPosition, pathToDestination, initArea, endArea] = updateCurrentPosition(currentPosition, destination, pathToDestination, initArea, endArea);
+    [currentPosition, pathToDestination, initArea, endArea] = updateCurrentPosition(currentPosition, destination, pathToDestination, initArea, endArea, newDestination);
     [rectanglesPosition, rectanglesDirection, rectanglesDelta] = calculateNewObstaclesPosition(rectanglesPosition, rectanglesMovementEnabled, rectanglesDirection, rectanglesDelta);
     
     if isequal(currentPosition, pathToDestination) || not(isPathAvailable(pathToDestination, rectanglesPosition))
@@ -33,7 +34,9 @@ while not(isempty(destinations))
     currentPositionPlot = draw(currentPosition, toDoPath, donePath, pathToDestination, rectanglesPosition, rectanglesColor, currentPositionPlot);
     if isequal(currentPosition, destination)
         [destination, destinationPlot, destinations] = drawDestination(destination, destinationPlot, destinations);
-        endArea = destination;
+        newDestination = true;
+    else
+        newDestination = false;
     end
     calculateWaitTimeAndWait();
 end
@@ -41,7 +44,7 @@ end
 
 %% Start functions section
 
-function [currentPosition, pathToDestination, initArea, endArea] = updateCurrentPosition(currentPosition, destination, pathToDestination, initArea, endArea)
+function [currentPosition, pathToDestination, initArea, endArea] = updateCurrentPosition(currentPosition, destination, pathToDestination, initArea, endArea, newDestination)
     initAreaEqualPosition = false;
     if size(pathToDestination, 1) > 1
         currentPosition = pathToDestination(2, :);
@@ -52,9 +55,9 @@ function [currentPosition, pathToDestination, initArea, endArea] = updateCurrent
     end
 
     if initAreaEqualPosition
-        [initArea, endArea] = calculateArea(currentPosition, destination, false, [], []);
+        [initArea, endArea] = calculateArea(currentPosition, destination, false, [], [], newDestination);
     else
-        [initArea, endArea] = calculateArea(currentPosition, destination, true, initArea, endArea);
+        [initArea, endArea] = calculateArea(currentPosition, destination, true, initArea, endArea, newDestination);
     end
     if not(isempty(pathToDestination))
         pathToDestination(1, :) = [];
@@ -127,8 +130,8 @@ function [currentDestination, destinationPlot, destinations] = drawDestination(c
     end
 end
 
-function [initArea, endArea] = calculateArea(currentPosition, destination, expandArea, initArea, endArea)
-    if isempty(expandArea) || not(expandArea)
+function [initArea, endArea] = calculateArea(currentPosition, destination, expandArea, initArea, endArea, newDestination)
+    if isempty(expandArea) || not(expandArea) || newDestination
         initArea = [min(currentPosition(1), destination(1)) min(currentPosition(2), destination(2))];
         endArea = [max(currentPosition(1), destination(1)) max(currentPosition(2), destination(2))];
     else
