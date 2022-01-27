@@ -1,65 +1,69 @@
-function [path, graphMatrix, nodePositions] = findPath(from, to, initArea, obstacles)
-    % setup
-    totalArea = (to(1) - initArea(1)) * (to(2) - initArea(2)); %Number of total points depends on area
-    maxTrials = round(totalArea * 5);
-
-    placedPoints = [];
-    pointsRoles = [];
-
-    for i=1:maxTrials
-        newPointX = initArea(1) + (to(1)-initArea(1)).*rand; % random number in given area
-        newPointY = initArea(2) + (to(2)-initArea(2)).*rand; % random number in given area
-        newPoint = [newPointX newPointY];
-        if isFreePoint(newPoint, obstacles, true)
-            numSeenGuards = lookForGuards(newPoint, placedPoints, pointsRoles, obstacles);
-            if numSeenGuards == 0
-                placedPoints = cat(1, placedPoints, newPoint);
-                pointsRoles = cat(1, pointsRoles, Role.GUARD);
-            elseif numSeenGuards >= 2
-                placedPoints = cat(1, placedPoints, newPoint);
-                pointsRoles = cat(1, pointsRoles, Role.CONNECTOR);
+function [path, graphMatrix, nodePositions] = findPath(from, to, initArea, endArea, obstacles)
+    if not(isequal(from, to))
+        totalArea = (endArea(1) - initArea(1)) * (endArea(2) - initArea(2)); %Number of total points depends on area
+        maxTrials = round(totalArea * 5);
+    
+        placedPoints = [];
+        pointsRoles = [];
+    
+        for i=1:maxTrials
+            newPointX = initArea(1) + (endArea(1) - initArea(1)).*rand; % random number in given area
+            newPointY = initArea(2) + (endArea(2) - initArea(2)).*rand; % random number in given area
+            newPoint = [newPointX newPointY];
+            if isFreePoint(newPoint, obstacles, true)
+                numSeenGuards = lookForGuards(newPoint, placedPoints, pointsRoles, obstacles);
+                if numSeenGuards == 0
+                    placedPoints = cat(1, placedPoints, newPoint);
+                    pointsRoles = cat(1, pointsRoles, Role.GUARD);
+                elseif numSeenGuards >= 2
+                    placedPoints = cat(1, placedPoints, newPoint);
+                    pointsRoles = cat(1, pointsRoles, Role.CONNECTOR);
+                end
             end
         end
-    end
-
-    % Adding from & to to the list of placed points
-    placedPoints = cat(1, placedPoints, from, to);
-    pointsRoles = cat(1, pointsRoles, Role.START, Role.END);
-
-
-    numberOfPlacedPoints = size(placedPoints, 1)
-    adjacencyMatrix = zeros(numberOfPlacedPoints, numberOfPlacedPoints);
-    for i=1:numberOfPlacedPoints
-        for j=i+1:numberOfPlacedPoints
-            if isFreeEdge(placedPoints(i, :), placedPoints(j,:), obstacles) && not(pointsRoles(i) == pointsRoles(j))
-                distance = norm(placedPoints(i, :) - placedPoints(j, :));
-                adjacencyMatrix(i, j) = distance;
-                adjacencyMatrix(j, i) = distance;
+    
+        % Adding from & to to the list of placed points
+        placedPoints = cat(1, placedPoints, from, to);
+        pointsRoles = cat(1, pointsRoles, Role.START, Role.END);
+    
+    
+        numberOfPlacedPoints = size(placedPoints, 1)
+        adjacencyMatrix = zeros(numberOfPlacedPoints, numberOfPlacedPoints);
+        for i=1:numberOfPlacedPoints
+            for j=i+1:numberOfPlacedPoints
+                if isFreeEdge(placedPoints(i, :), placedPoints(j,:), obstacles) && not(pointsRoles(i) == pointsRoles(j))
+                    distance = norm(placedPoints(i, :) - placedPoints(j, :));
+                    adjacencyMatrix(i, j) = distance;
+                    adjacencyMatrix(j, i) = distance;
+                end
             end
         end
-    end
-
-    fromNodeIndex = size(placedPoints, 1) - 1;
-    toNodeIndex = size(placedPoints, 1);
-    graphMatrix = adjacencyMatrix;
-    nodePositions = placedPoints;
-    adjacencyMatrixGraph = graph(adjacencyMatrix);
-    shortestPath = [];
-    unattainableNodes = [];
-    while not(isempty(toNodeIndex)) && isempty(shortestPath)
-        shortestPath = adjacencyMatrixGraph.shortestpath(fromNodeIndex, toNodeIndex);
-        if isempty(shortestPath)
-            currentToNode = placedPoints(toNodeIndex, :);
-            unattainableNodes = cat(1, unattainableNodes, toNodeIndex);
-            toNodeIndex = findNearestNode(currentToNode, placedPoints, unattainableNodes);
+    
+        fromNodeIndex = size(placedPoints, 1) - 1;
+        toNodeIndex = size(placedPoints, 1);
+        graphMatrix = adjacencyMatrix;
+        nodePositions = placedPoints;
+        adjacencyMatrixGraph = graph(adjacencyMatrix);
+        shortestPath = [];
+        unattainableNodes = [];
+        while not(isempty(toNodeIndex)) && isempty(shortestPath)
+            shortestPath = adjacencyMatrixGraph.shortestpath(fromNodeIndex, toNodeIndex);
+            if isempty(shortestPath)
+                currentToNode = placedPoints(toNodeIndex, :);
+                unattainableNodes = cat(1, unattainableNodes, toNodeIndex);
+                toNodeIndex = findNearestNode(currentToNode, placedPoints, unattainableNodes);
+            end
         end
-    end
-    if not(isempty(toNodeIndex)) % If path to destination not found then don't move
-        path = placedPoints(shortestPath, :);
+        if not(isempty(toNodeIndex)) % If path to destination not found then don't move
+            path = placedPoints(shortestPath, :);
+        else
+            path = from;
+        end
     else
         path = from;
+        graphMatrix = [];
+        nodePositions = [];
     end
-
 end
 
 function [nearestNodeIndex] = findNearestNode(currentToNode, allNodes, unattainableNodes)
