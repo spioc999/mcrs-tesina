@@ -1,7 +1,7 @@
 function [path, graphMatrix, nodePositions] = findPath(from, to, initArea, obstacles)
     % setup
     totalArea = (to(1) - initArea(1)) * (to(2) - initArea(2)); %Number of total points depends on area
-    maxTrials = round(totalArea * 10);
+    maxTrials = round(totalArea * 5);
 
     placedPoints = [];
     pointsRoles = [];
