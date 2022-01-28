@@ -1,4 +1,4 @@
-function [positionsOutput, directionsOutput, deltasOutput] = calculateNewObstaclesPosition(positions, movementsEnabled, directions, deltas)
+function [positionsOutput, directionsOutput, deltasOutput] = calculateNewObstaclesPosition(positions, movementsEnabled, directions, deltas, currentPosition)
 
 positionsOutput = [];
 directionsOutput = [];
@@ -17,6 +17,27 @@ for i=1:size(positions, 1)
         [x, y] = moveElement(xOutput, yOutput, directionOutput, deltaOutput);
         xOutput = x;
         yOutput = y;
+
+        isColliding = checkCollisionWithObstacles(xOutput, yOutput, w, h, fountain) || ~isFreePoint(currentPosition, [xOutput yOutput w h], true);
+        if isColliding
+            if or(directionOutput == 0, directionOutput == 2)
+                deltaOutput = -deltaOutput;
+            else
+                if directionOutput == 1
+                    directionOutput = 3;
+                elseif directionOutput == 3
+                    directionOutput = 1;
+                end
+            end
+            [x, y] = moveElement(xOutput, yOutput, directionOutput, deltaOutput);
+            isCollidingAgain = checkCollisionWithObstacles(x, y, w, h, fountain) || ~isFreePoint(currentPosition, [xOutput yOutput w h], true);
+            if isCollidingAgain
+                deltaOutput = -deltaOutput;
+                [x, y] = moveElement(xOutput, yOutput, directionOutput, deltaOutput);
+            end
+            xOutput = x;
+            yOutput = y;
+        end
         
         [isOverflow, xOverflow, yOverflow] = checkOverflowWithBorders(xOutput, yOutput, w, h);
         
@@ -37,27 +58,6 @@ for i=1:size(positions, 1)
                     directionOutput = 1;
                 end
             end
-        end
-        
-        isColliding = checkCollisionWithObstacles(xOutput, yOutput, w, h, fountain);
-        if isColliding
-            if or(directionOutput == 0, directionOutput == 2)
-                deltaOutput = -deltaOutput;
-            else
-                if directionOutput == 1
-                    directionOutput = 3;
-                elseif directionOutput == 3
-                    directionOutput = 1;
-                end
-            end
-            [x, y] = moveElement(xOutput, yOutput, directionOutput, deltaOutput);
-            isCollidingAgain = checkCollisionWithObstacles(x, y, w, h, fountain);
-            if isCollidingAgain
-                deltaOutput = -deltaOutput;
-                [x, y] = moveElement(xOutput, yOutput, directionOutput, deltaOutput);
-            end
-            xOutput = x;
-            yOutput = y;
         end
     end
     positionsOutput = cat(1, positionsOutput, [xOutput yOutput w h]);
