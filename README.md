@@ -2,11 +2,10 @@
 
 # Config file
 The config file must be set up as follow.
-The filed must contains 8 blocks, if some block configuration missing then they will be generated randomly.
 
 InitialPosition, MovementEnabled, Direction, Delta
-[x y w h]*, 0/1, 0/3, float
-[x y w h], *, *, *
+[x y w h], 0/1, 0/3, float [-1 1]
+[* * * *], *, *, * -> * represents the escape character, totally random block.
 
 ## Field Meaning
 - InitialPosition: 
@@ -20,6 +19,6 @@ InitialPosition, MovementEnabled, Direction, Delta
     - 1: diagonal-right (bottom:left, up:right)
     - 2: horizontal
     - 3: diagonal-left (bottom:right, up:left)
-- Delta: defines the block movement, should be a small value that could be also a negative value.
+- Delta: defines the block movement, should be a small value that could be also a negative value. (from -1 to 1) 
 
-Each information will populate a different column and to retrive info about a specific block you should refer to it by its list index.
+Each information will populate a different vector and to retrive info about a specific block you should refer to it by its list index.
