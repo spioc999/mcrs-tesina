@@ -8,7 +8,7 @@ hold on
 
 %TODO: refactoring from rectangle to obstacle
 
-[rectanglesPosition, rectanglesMovementEnabled, rectanglesDirection, rectanglesDelta, rectanglesColor] = getInitialConfig("config_files/config_pr.txt");
+[rectanglesPosition, rectanglesMovementEnabled, rectanglesDirection, rectanglesDelta, rectanglesColor] = getInitialConfig("config_files/random.txt");
 [rectanglesPosition, rectanglesMovementEnabled, rectanglesDirection, rectanglesDelta] = addFountainToObstacles(rectanglesPosition, rectanglesMovementEnabled, rectanglesDirection, rectanglesDelta);
 
 [currentPosition, initArea, endArea, donePath, toDoPath] = initVariables();
@@ -23,7 +23,7 @@ pause(2); % Wait in order to evaluate the field
 while not(isempty(destinations))
     tic % Starting piece of code time count
     [currentPosition, pathToDestination, initArea, endArea] = updateCurrentPosition(currentPosition, destination, pathToDestination, initArea, endArea, newDestination);
-    [rectanglesPosition, rectanglesDirection, rectanglesDelta] = calculateNewObstaclesPosition(rectanglesPosition, rectanglesMovementEnabled, rectanglesDirection, rectanglesDelta);
+    [rectanglesPosition, rectanglesDirection, rectanglesDelta] = calculateNewObstaclesPosition(rectanglesPosition, rectanglesMovementEnabled, rectanglesDirection, rectanglesDelta, currentPosition);
     
     if isequal(currentPosition, pathToDestination) || not(isPathAvailable(pathToDestination, rectanglesPosition))
         [pathToDestination, graphMatrix, nodePositions] = findPath(currentPosition, destination, initArea, endArea, rectanglesPosition);
