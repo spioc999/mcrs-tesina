@@ -14,7 +14,7 @@ hold on
 [currentPosition, initArea, endArea, donePath, toDoPath] = initVariables();
 newDestination = true;
 
-[destinations] = findDestinations(3, rectanglesPosition);
+[destinations] = findDestinations(1, rectanglesPosition);
 [destination, destinationPlot, destinations] = drawDestination([], [], destinations);
 [pathToDestination, graphMatrix, nodePositions] = findPath(currentPosition, destination, initArea, endArea, rectanglesPosition);
 [currentPositionPlot, graphPlot] = draw(currentPosition, toDoPath, donePath, pathToDestination, rectanglesPosition, rectanglesColor, [], graphMatrix, nodePositions, [], initArea, endArea);
@@ -37,6 +37,7 @@ while not(isempty(destinations))
     end
     calculateWaitTimeAndWait();
 end
+[x, y] = getpoints(donePath)
 
 
 %% Start functions section
