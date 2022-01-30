@@ -19,7 +19,7 @@ function [fixedFileLines] = skipHeader(fileLines)
     fixedFileLines = [];
     for lineNumber=1:size(fileLines, 1)
         lineElements = split(fileLines(lineNumber));
-        if not(strcmp(lineElements(1), "")) && not(strcmp(lineElements(1), '#'))
+        if not(strcmp(lineElements(1), "")) && not(contains(lineElements(1), '#'))
             fixedFileLines = cat(1, fixedFileLines, lineElements');
         end
     end
