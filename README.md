@@ -3,8 +3,8 @@
 # Config file
 The config file must be set up as follow.
 
-InitialPosition, MovementEnabled, Direction, Delta
-[x y w h], 0/1, 0/3, float [-1 1]
+InitialPosition, MovementEnabled, Direction, Delta \
+[x y w h], 0/1, 0/3, float [-1 1] \
 [* * * *], *, *, * -> * represents the escape character, totally random block.
 
 ## Field Meaning
