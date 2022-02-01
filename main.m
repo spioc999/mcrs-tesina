@@ -27,6 +27,7 @@ while not(isempty(destinations))
     if isequal(currentPosition, pathToDestination) || not(isPathAvailable(pathToDestination, rectanglesPosition))
         [pathToDestination, graphMatrix, nodePositions] = findPath(currentPosition, destination, initArea, endArea, rectanglesPosition);
     end
+    calculateWaitTimeAndWait();
     [currentPositionPlot, graphPlot] = draw(currentPosition, toDoPath, donePath, pathToDestination, rectanglesPosition, rectanglesColor, currentPositionPlot, graphMatrix, nodePositions, graphPlot, initArea, endArea);
     if isequal(currentPosition, destination)
         [destination, destinationPlot, destinations] = drawDestination(destination, destinationPlot, destinations);
@@ -34,7 +35,6 @@ while not(isempty(destinations))
     else
         newDestination = false;
     end
-    calculateWaitTimeAndWait();
 end
 [x, y] = getpoints(donePath)
 
