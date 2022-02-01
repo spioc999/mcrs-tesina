@@ -21,8 +21,9 @@ pause(2); % Wait in order to evaluate the field
 
 while not(isempty(destinations))
     tic % Starting piece of code time count
+    oldPosition = currentPosition;
     [currentPosition, pathToDestination, initArea, endArea] = updateCurrentPosition(currentPosition, destination, pathToDestination, initArea, endArea, newDestination);
-    [rectanglesPosition, rectanglesDirection, rectanglesDelta] = calculateNewObstaclesPosition(rectanglesPosition, rectanglesMovementEnabled, rectanglesDirection, rectanglesDelta, currentPosition);
+    [rectanglesPosition, rectanglesDirection, rectanglesDelta] = calculateNewObstaclesPosition(rectanglesPosition, rectanglesMovementEnabled, rectanglesDirection, rectanglesDelta, oldPosition);
     
     if isequal(currentPosition, pathToDestination) || not(isPathAvailable(pathToDestination, rectanglesPosition))
         [pathToDestination, graphMatrix, nodePositions] = findPath(currentPosition, destination, initArea, endArea, rectanglesPosition);
@@ -100,8 +101,8 @@ function [currentPosition, initArea, endArea, donePath, toDoPath] = initVariable
 end
 
 function [remainingWaitTime] = calculateWaitTimeAndWait()
-    toc
-    remainingWaitTime = 1 - toc;
+    usedTime = toc;
+    remainingWaitTime = ceil(usedTime) - usedTime;
     if remainingWaitTime > 0
         pause(remainingWaitTime);
     end
