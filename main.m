@@ -6,7 +6,6 @@ axis('square')
 set(gca, 'XLim', [0 10], 'YLim', [0 10])
 hold on
 
-%TODO: refactoring from rectangle to obstacle
 
 [rectanglesPosition, rectanglesMovementEnabled, rectanglesDirection, rectanglesDelta, rectanglesColor] = getInitialConfig("config_files/random.txt");
 [rectanglesPosition, rectanglesMovementEnabled, rectanglesDirection, rectanglesDelta] = addFountainToObstacles(rectanglesPosition, rectanglesMovementEnabled, rectanglesDirection, rectanglesDelta);
